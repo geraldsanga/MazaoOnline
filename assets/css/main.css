@@ -1,0 +1,30 @@
+.title-underline{
+    height:10px;
+    min-width:100%;
+    margin:0 auto;
+    
+  }
+
+.bg-jungle{
+    background-color: #204E4A;
+}
+.bg-olive{
+    background-color: #7FAD39;
+}
+.sectit{
+    height:100vh;
+}
+.bg-flame{
+    background-color: #cf352e;
+}
+.bg-ogre{
+    
+    color:#CC7400;
+}
+.bg-size{
+background-size:cover;
+}
+.w-100 {
+    width: 100% !important;
+    height: 50vh;
+  }
