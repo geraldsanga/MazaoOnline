@@ -1,3 +1,4 @@
+ {% load cart_template_tags %}
 {% load static %}
 <head>
     <meta charset="UTF-8">
@@ -19,6 +20,11 @@
     <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
+    <script src="https://js.stripe.com/v3/"></script>
+    {% block extra_links %}
+    {% endblock extra_links %}
+    {% block custom_css %}
+    {% endblock custom_css %}
 
 </head>
 
@@ -43,6 +49,11 @@
                             </div>
                         {% else %}
                             <div class="header__top__right__auth">
+                                <a href="{% url 'order-summary' %}">
+                                <span style="color: #fff" class="badge badge-lg badge-primary badge-pill">  {{ request.user|cart_product_count }}  </span>
+                                <i class="fa fa-shopping-cart"></i> Cart</a>
+                            </div>
+                            <div class="header__top__right__auth ml-3">
                                 <a href="{% url 'logout_view' %}"><i class="fa fa-user"></i> Log Out</a>
                             </div>
                         {% endif %}
@@ -56,15 +67,15 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="header__logo">
-                    <a href="./index.html"><img src="{% static 'img/logo.png' %}" alt=""></a>
+                    <a href="/"><img src="{% static 'img/logo.png' %}" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-6">
                 <nav class="header__menu">
                     <ul>
                         <li><a href="{% url 'home_page' %}">Home</a></li>
-                        <li class="active"><a href="./shop-grid.html">Shop</a></li>
-                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="{% url 'order-summary' %}">Shop</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
                     </ul>
                 </nav>
             </div>
@@ -101,7 +112,7 @@
                                 All Categories
                                 <span class="arrow_carrot-down"></span>
                             </div>
-                            <input type="text" placeholder="What do you need?">
+                            <input type="text" placeholder="This is not working for now?">
                             <button type="submit" class="site-btn">SEARCH</button>
                         </form>
                     </div>

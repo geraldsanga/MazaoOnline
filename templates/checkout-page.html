@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load humanize %}
+
+{% block content %}
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Checkout</h2>
+                        <div class="breadcrumb__option">
+                            <a href="{% url 'home_page' %}">Home</a>
+                            <span>Checkout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <div class="container wow fadeIn">
+        <div style="margin-top: 20px;" class="mb-3">
+            {% include "messages.html" %}
+        </div>
+        <!--Grid row-->
+        <div class="row" style="margin-top: 20px;">
+
+            <!--Grid column-->
+            <div class="col-md-8 mb-4">
+
+                <!--Card-->
+                <div class="card">
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row card-body" style="margin: 10px;">
+                            <h4 class="mb-3">Billing Details</h4>
+
+                            <div class="col-lg-12 col-md-6">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="checkout__input">
+                                            <p>Fist Name<span>*</span></p>
+                                            <input type="text" value="{{ user.first_name }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="checkout__input">
+                                            <p>Last Name<span>*</span></p>
+                                            <input type="text" value="{{ user.last_name }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="checkout__input">
+                                    <p>Country<span>*</span></p>
+                                    {{ form.country }}
+                                </div>
+                                <div class="checkout__input">
+                                    <p>Address<span>*</span></p>
+                                    {{ form.street_address }}
+                                </div>
+                                <div class="checkout__input">
+                                    <p>Town/City<span>*</span></p>
+                                    {{ form.city }}
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="checkout__input">
+                                            <p>Phone<span>*</span></p>
+                                            {{ form.phone }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="checkout__input">
+                                            <p>Email<span>*</span></p>
+                                            <input type="text" value="{{ user.email }}">
+                                        </div>
+                                    </div>
+                                    <div class="d-block my-3">
+                                        <p for="payment_option" style="color: black;">Payment Option<span
+                                                style="color: red;">*</span></p> <br>
+                                        {% for value, name in form.fields.payment_option.choices %}
+                                        <div class="custom-control custom-radio">
+                                            <input id="{{ name }}" name="payment_option" value="{{ value }}"
+                                                type="radio" class="custom-control-input" required>
+                                            <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+
+                        </div>
+                    </form>
+
+                </div>
+                <!--/.Card-->
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-4 mb-4">
+
+                <!-- Heading -->
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Your cart</span>
+                    <span class="badge badge-secondary badge-pill">{{ order.product.count }}</span>
+                </h4>
+
+                <!-- Cart -->
+                <ul class="list-group mb-3 z-depth-1">
+
+                    {% for order_product in order.product.all %}
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+
+
+                            <h6 class="my-0">{{ order_product.product.name }} x {{ order_product.quantity }}</h6>
+                            <small class="text-muted">{{ order_product.product.description }}</small>
+                        </div>
+                        <span class="text-muted">TZS {{ order_product.get_final_price|intcomma }}</span>
+                    </li>
+                    {% endfor %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total (TZS)</span>
+                        <strong>TZS{{ order.get_total|intcomma }}</strong>
+                    </li>
+                </ul>
+                <!-- Cart -->
+
+            </div>
+            <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+
+    </div>
+    {% endblock content %}
