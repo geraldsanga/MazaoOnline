@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.views.generic import DetailView
+from django.contrib.auth.decorators import login_required
 
 
 def register_view(request):
@@ -38,6 +40,23 @@ def login_view(request):
         else:
             messages.error(request, "Invalid Credentials")
     return render(request, 'login.html', {})
+
+
+@login_required
+def profile_view(request, id):
+    user = User.objects.get(id=id)
+    order_counter = int()
+    onhold = int()
+    for order in user.order_set.all():
+        if order.ordered is True:
+            order_counter += 1
+        else:
+            onhold += 1
+    return render(request, 'profile_view.html',{
+        'object': User.objects.get(id=id),
+        'order_counter': order_counter,
+        'onhold': onhold
+    })
 
 
 def logout_view(request):

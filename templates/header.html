@@ -67,12 +67,12 @@
                          </div>
                          <div class="header__top__right__auth ml-3">
                              <div class="dropdown">
-                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                 <button style="background-color: #7fad39;border: #7fad39;" class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                      Account
                                  </button>
                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                     <a class="dropdown-item" href="#">Profile</a>
+                                     <a class="dropdown-item" href="{% url 'profile' request.user.id %}">Profile</a>
                                      <a class="dropdown-item" href="{% url 'logout_view' %}">Logout</a>
                                  </div>
                              </div>

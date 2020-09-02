@@ -2,7 +2,7 @@
 
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 
 from site_models.views import checkout_page, home_page,OrderSummaryView, ProductDetailView,\
@@ -27,6 +27,7 @@ urlpatterns = [
     path('register/', register_view, name="register_view"),
     path('log_in/', login_view, name="login_view"),
     path('log_out/', logout_view, name="logout_view"),
+    path('', include('account.urls')),
 
 ]
 
