@@ -381,4 +381,17 @@ class CashDeliveryView(LoginRequiredMixin, View):
             payment_option="cash"
             messages.info(self.request, "Failed to clear order!", fail_silently=False)
             return redirect("cash-delivery", payment_option)
-        
+
+
+class OrdersView(LoginRequiredMixin, View):
+
+    def get(self, *args, **kwargs):
+        # Get all orders of the requested user
+        orders = Order.objects.filter(customer=self.request.user)
+
+        return render(self.request, 'all_orders.html',{
+            'orders': orders
+        })
+    
+    def post(self, *args, **kwargs):
+        pass

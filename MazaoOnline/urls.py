@@ -2,12 +2,12 @@
 
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 
 from site_models.views import checkout_page, home_page,OrderSummaryView, ProductDetailView,\
     add_to_cart, CheckoutView, PaymentView, remove_single_item_from_cart, remove_from_cart,\
-        ContactView, CashDeliveryView
+        ContactView, CashDeliveryView, OrdersView
 from account.views import register_view, login_view, logout_view
 
 urlpatterns = [
@@ -24,9 +24,11 @@ urlpatterns = [
     path('delivery/<str:payment_option>/', CashDeliveryView.as_view(), name="cash-delivery"),
     path('payment/<str:payment_option>/', PaymentView.as_view(), name="payment"),
     path('order-summary/', OrderSummaryView.as_view(), name="order-summary"),
+    path('all-orders/', OrdersView.as_view(), name="all-orders"),
     path('register/', register_view, name="register_view"),
     path('log_in/', login_view, name="login_view"),
     path('log_out/', logout_view, name="logout_view"),
+    path('', include('account.urls')),
 
 ]
 
