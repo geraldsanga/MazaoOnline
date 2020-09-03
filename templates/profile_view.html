@@ -255,6 +255,7 @@
     <div id="preloder">
         <div class="loader"></div>
     </div>
+    {% include "messages.html" %}
     <div class="container">
         <div class="row user-menu-container square">
             <div class="col-md-7 user-details">
@@ -265,7 +266,7 @@
                             <h4 class="white">{{ object.profile.street_address }}, {{ object.profile.city }}</h4>
                             <h4 class="white">{{ object.profile.country.name }}</h4>
                             <h4 class="white">{{ object.profile.phone }}</h4>
-                            <button style="margin-top: 10px;" type="button" class="btn btn-labeled btn-info" href="#">
+                            <button style="margin-top: 10px;" type="button" class="btn btn-labeled btn-info" data-toggle="modal" data-target="#exampleModal" >
                                 <span class="btn-label"><i class="fa fa-pencil"></i></span>Update
                             </button>
                         </div>
@@ -330,6 +331,53 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Username</label>
+                      <input name="username" type="text" value="{{ object.username }}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
+                      <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Firstname</label>
+                      <input name="first_name" type="text" value="{{ object.first_name }}" class="form-control" id="exampleInputPassword1" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Lastname</label>
+                        <input name="last_name" type="text" value="{{ object.last_name }}" class="form-control" id="exampleInputPassword1" placeholder="">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">City</label>
+                        <input name="city" type="text" value="{{ object.profile.city }}" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">Street</label>
+                        <input name="street" type="text" value="{{ object.profile.street_address }}" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">Phone</label>
+                        <input name="phone" type="text" value="{{ object.profile.phone }}" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </form>
+            </div>
+            <div class="modal-footer">
+            
+            </div>
+        </div>
         </div>
     </div>
     {% endblock content %}

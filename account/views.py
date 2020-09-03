@@ -57,6 +57,19 @@ def profile_view(request, id):
     # Recent Orders
     queryset = Order.objects.filter(customer=user)[:3]
 
+    # Updating profile details
+    if request.method == "POST":
+        user = User.objects.get(id=id)
+        user.username = request.POST.get('username')
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.profile.city = request.POST.get('city')
+        user.profile.street_address = request.POST.get('street')
+        user.profile.phone = request.POST.get('phone')
+        user.save()
+
+        messages.success(request, 'Profile Successfully updated.', fail_silently=False)
+
     return render(request, 'profile_view.html',{
         'object': User.objects.get(id=id),
         'order_counter': order_counter,
