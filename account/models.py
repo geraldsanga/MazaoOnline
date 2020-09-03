@@ -8,7 +8,7 @@ from django_countries.fields import CountryField
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='users/')
+    image = models.ImageField(upload_to='users/', null=True, blank=True)
     country = CountryField(multiple=False,null=True,blank=True)
     city = models.CharField(max_length=50,null=True,blank=True)
     street_address = models.CharField(max_length=255,null=True,blank=True)
