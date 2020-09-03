@@ -245,6 +245,10 @@
             max-height: 400px;
         }
     }
+    #go_shopping:hover {
+        text-decoration: none;
+        color: darkgreen;
+    }
 </style>
 {% endblock custom_css %}
 
@@ -274,10 +278,10 @@
                     <div class="col-md-6 no-pad">
                         <div class="user-image">
                             {% if object.profile.image %}
-                            <img src="{{ object.profile.image.url }}"
+                            <img style="border-radius: 5%;" src="{{ object.profile.image.url }}"
                             class="img-responsive thumbnail">
                             {% else %}
-                            <img src="{% static 'img/avatar.png' %}"
+                            <img style="border-radius: 5%;" src="{% static 'img/avatar.png' %}"
                                 class="img-responsive thumbnail">
                             {% endif %}
                         </div>
@@ -321,12 +325,15 @@
                         {% endfor %}
                        
                         <li style="margin-top: 10px;">
-                            <button type="button" class="btn btn-labeled btn-success" href="#">
-                                <span class="btn-label">View all orders</button>
+                            <a href="{% url 'all-orders' %}">
+                                <button type="button" class="btn btn-labeled btn-success">
+                                    <span class="btn-label">View all orders</button>
+                            </a>
                         </li>
                     </ul>
                     {% else %}
-                    <h3>Not Orders Yet!</h3>
+                    <h3>No Orders Yet!</h3>
+                    <small><a style="text-decoration: none;" id="go_shopping" href="/">Go Shopping</a></small>
                     {% endif %}
                 </div>
 

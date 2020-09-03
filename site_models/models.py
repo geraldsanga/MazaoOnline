@@ -70,6 +70,7 @@ class Order(models.Model):
         null=True,
         blank=True
     )
+    payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, null=True, blank=True)
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField()
 

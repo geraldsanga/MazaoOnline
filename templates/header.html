@@ -63,13 +63,13 @@
                              <a href="{% url 'order-summary' %}">
                                  <span style="color: #fff" class="badge badge-lg badge-primary badge-pill">
                                      {{ request.user|cart_product_count }} </span>
-                                 <i class="fa fa-shopping-cart"></i> Cart</a>
+                                 <i class="fa fa-shopping-cart"></i> <span style="font-weight: 900;">CART</span></a>
                          </div>
                          <div class="header__top__right__auth ml-3">
                              <div class="dropdown">
                                  <button style="background-color: #7fad39;border: #7fad39;" class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                     Account
+                                     ACCOUNT
                                  </button>
                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                      <a class="dropdown-item" href="{% url 'profile' request.user.id %}">Profile</a>
