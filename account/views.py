@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
+from site_models.models import Order
 
 
 def register_view(request):
@@ -52,10 +53,15 @@ def profile_view(request, id):
             order_counter += 1
         else:
             onhold += 1
+
+    # Recent Orders
+    queryset = Order.objects.filter(customer=user)[:3]
+
     return render(request, 'profile_view.html',{
         'object': User.objects.get(id=id),
         'order_counter': order_counter,
-        'onhold': onhold
+        'onhold': onhold,
+        'qs': queryset
     })
 
 

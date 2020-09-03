@@ -50,7 +50,7 @@ class OrderProduct(models.Model):
 
 
     def __str__(self):
-        return f"{self.quantity} of {self.product.name}"
+        return f"{self.quantity} {self.product.name}"
     
     def get_total_product_price(self)->int:
         return self.quantity * self.product.price
