@@ -21,6 +21,8 @@
      <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
      <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
      <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
+
+     
      <script src="https://js.stripe.com/v3/"></script>
      {% block extra_links %}
      {% endblock extra_links %}
@@ -34,6 +36,9 @@
          .dropdown>.dropdown-toggle:active {
              /*Without this, clicking will make it sticky*/
              pointer-events: none;
+         }
+         .error {
+             color: red;
          }
      </style>
 
