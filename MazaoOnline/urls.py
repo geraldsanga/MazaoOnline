@@ -1,15 +1,14 @@
 """MazaoOnline URL Configuration"""
-
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-
 from site_models.views import checkout_page, home_page,OrderSummaryView, ProductDetailView,\
     add_to_cart, CheckoutView, PaymentView, remove_single_item_from_cart, remove_from_cart,\
         ContactView, CashDeliveryView, OrdersView
 from account.views import register_view, login_view, logout_view
 from django.contrib.auth.decorators import login_required
+from django.conf.urls.static import static
+from django.urls import path, include
+from django.conf import settings
+from django.contrib import admin
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
