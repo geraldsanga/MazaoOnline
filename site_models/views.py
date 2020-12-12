@@ -12,7 +12,7 @@ import stripe
 stripe.api_key = "sk_test_51HItOtLilkzwV54uwf5LfpsQp6302tMZS2bOMjb9S9XaqOmuJNPQEmUseDupisP55UOV3knPneAVOaZXsqQlqKjR00CdeIMoqO"
 
 
-
+@login_required(login_url="login_view")
 def checkout_page(request, pk):
     category_list = Category.objects.all()
     user = request.user
@@ -64,6 +64,7 @@ def home_page(request):
     return render(request, 'home.html', context)
 
 
+@login_required(login_url="login_view")
 def save_order(request):
     pass
 
@@ -88,7 +89,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = "product_detail.html"
 
 
-@login_required
+@login_required(login_url="login_view")
 def add_to_cart(request, slug):
     product = get_object_or_404(Product, slug=slug)
     order_product, created = OrderProduct.objects.get_or_create(
@@ -151,9 +152,19 @@ class CheckoutView(LoginRequiredMixin, View):
                     street_address = street_address,
                     phone = phone
                 )
-                billing_address.save()
-                order.billing_address = billing_address
-                order.save()
+                
+                if len(street_address) < 2:
+                    for value in street_address:
+                        if value in ["#", "@", "!", "/", ")","%","_","-",","]:
+                            messages.error(self.request, "Bad input for street address")
+                            return redirect("checkout")
+                    else:
+                        billing_address.save()
+                        order.billing_address = billing_address
+                        order.save()
+                else:
+                    messages.error(self.request, "Bad input for street address")
+                    return redirect("checkout")
                 print("Checked Out.")
                 
                 if payment_option == 'S':
@@ -252,7 +263,7 @@ class PaymentView(LoginRequiredMixin, View):
             messages.error(self.request, "A serious error occured. We've emailed you instructions.")
             return redirect("/")
 
-@login_required
+@login_required(login_url="login_view")
 def remove_single_item_from_cart(request, slug):
     product = get_object_or_404(Product, slug=slug)
     # print(item.slug)
@@ -296,7 +307,7 @@ def remove_single_item_from_cart(request, slug):
     return redirect("product", slug=slug)
 
 
-@login_required
+@login_required(login_url="login_view")
 def remove_from_cart(request, slug):
     product = get_object_or_404(Product, slug=slug)
     # print(item.slug)
