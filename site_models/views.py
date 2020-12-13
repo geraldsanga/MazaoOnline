@@ -153,19 +153,19 @@ class CheckoutView(LoginRequiredMixin, View):
                     phone = phone
                 )
                 
-                if len(street_address) < 2:
-                    for value in street_address:
-                        if value in ["#", "@", "!", "/", ")","%","_","-",","]:
-                            messages.error(self.request, "Bad input for street address")
-                            return redirect("checkout")
-                    else:
-                        billing_address.save()
-                        order.billing_address = billing_address
-                        order.save()
-                else:
-                    messages.error(self.request, "Bad input for street address")
-                    return redirect("checkout")
-                print("Checked Out.")
+                # if len(street_address) < 2:
+                #     for value in street_address:
+                #         if value in ["#", "@", "!", "/", ")","%","_","-",","]:
+                #             messages.error(self.request, "Bad input for street address")
+                #             return redirect("checkout")
+                #     else:
+                billing_address.save()
+                order.billing_address = billing_address
+                order.save()
+                # else:
+                #     messages.error(self.request, "Bad input for street address")
+                #     return redirect("checkout")
+                # print("Checked Out.")
                 
                 if payment_option == 'S':
                     return redirect("payment", payment_option="stripe")
