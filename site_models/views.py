@@ -1,14 +1,21 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CheckoutForm
-from django.core.exceptions import ObjectDoesNotExist
 from .models import Category, Product, Order, OrderProduct, BillingAddress, Payment, Contact
-from django.contrib import messages
-from django.views.generic import View, DetailView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import View, DetailView
+from django.contrib import messages
 from django.utils import timezone
+from .forms import CheckoutForm
+from django.db.models import Q
+from functools import reduce
+import operator
 import stripe
+# from _functools import reduce
+
+
 stripe.api_key = "sk_test_51HItOtLilkzwV54uwf5LfpsQp6302tMZS2bOMjb9S9XaqOmuJNPQEmUseDupisP55UOV3knPneAVOaZXsqQlqKjR00CdeIMoqO"
 
 
@@ -406,3 +413,20 @@ class OrdersView(LoginRequiredMixin, View):
     
     def post(self, *args, **kwargs):
         pass
+
+
+@login_required(login_url="login_view")
+def search_view(request):
+    context = dict()
+    queryset = Product.objects.all().order_by("name")
+    results = list()
+    q = request.POST.get("q")
+    if q is not None:
+        words = q.split()
+        for w in words:
+            results.append(queryset.filter(
+                Q(name__icontains=w) | Q(description__icontains=w) | Q(price__icontains=w)
+            ).distinct())
+        context["results"] = results
+    return render(request, "results.html", context)
+

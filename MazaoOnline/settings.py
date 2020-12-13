@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Oops! Oops!
 SECRET_KEY = '&4ps&mgs_2uc-&)oa%)=9gt5i*7-d2un)1$8n81c807gilfe-a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -72,8 +73,12 @@ WSGI_APPLICATION = 'MazaoOnline.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mazao',
+        'USER': 'postgres',
+        'PASSWORD': 'l@pit0n33'
     }
 }
 
