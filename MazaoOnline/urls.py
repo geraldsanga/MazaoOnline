@@ -1,7 +1,8 @@
 """MazaoOnline URL Configuration"""
 from site_models.views import checkout_page, home_page,OrderSummaryView, ProductDetailView,\
     add_to_cart, CheckoutView, PaymentView, remove_single_item_from_cart, remove_from_cart,\
-        ContactView, CashDeliveryView, OrdersView,search_view
+        ContactView, CashDeliveryView, OrdersView,search_view,product_detail,update_review,\
+        add_review,delete_review
 from account.views import register_view, login_view, logout_view
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
@@ -15,7 +16,11 @@ urlpatterns = [
     path('home/', home_page, name="home_page"),
     path('', home_page, name="home_page"),
     path('results/', search_view, name="search"),
-    path('product/<slug>/detail/', login_required(login_url="login_view")(ProductDetailView.as_view()), name="product"),
+    path('product/add/', add_review, name="add_review"),
+    path('product/<slug>/detail/', product_detail, name="product"),
+    path('product/<int:q_id>/delete/', delete_review, name="delete_review"),
+    path('product/<int:q_id>/<int:user_id>/review/update/', update_review, name="update_review"),
+    # path('product/<slug>/detail/', login_required(login_url="login_view")(ProductDetailView.as_view()), name="product"),
     path('add-to-cart/<slug>/', add_to_cart, name="add-to-cart"),
     path('remove-product-from-cart/<slug>/', remove_single_item_from_cart, name="remove-single-item-from-cart"),
     path('remove-from-cart/<slug>/', remove_from_cart, name="remove-from-cart"),

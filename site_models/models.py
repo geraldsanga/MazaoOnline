@@ -127,4 +127,14 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.phone
-    
+
+
+class ProductReview(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    content = models.TextField(max_length=255, null=True)
+    rating = models.IntegerField(default=1)
+    date_reviewed = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"review for {self.product} by {self.user}"

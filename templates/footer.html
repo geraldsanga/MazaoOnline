@@ -1,67 +1,96 @@
 {% load static %}
-    <!-- Footer Section Begin -->
-    <footer class="footer spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="footer__about">
-                        <div class="footer__about__logo">
-                            <a style="text-decoration: none;color: inherit;" href="{% url 'home_page' %}"><img src="{% static 'img/download.png' %}" width="60" height="60">
-                                <span style="font-size: 25px;font-weight: 700" class="ml-2">Mavazi<span style="color: #7FAD39">Online</span></span>
-                                </a>
-                        </div>
-                        <ul>
-                            <li>Address: Shaban Robert, Posta</li>
-                            <li>Phone: +255 764 264 862</li>
-                            <li>Email: gerardsanga7@gmail.com</li>
-                        </ul>
+<!-- Footer Section Begin -->
+<footer class="footer spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="footer__about">
+                    <div class="footer__about__logo">
+                        <a style="text-decoration: none;color: inherit;" href="{% url 'home_page' %}"><img
+                                src="{% static 'img/download.png' %}" width="60" height="60">
+                            <span style="font-size: 25px;font-weight: 700" class="ml-2">Mazao<span
+                                    style="color: #7FAD39">Online</span></span>
+                        </a>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
-                    <div class="footer__widget">
-                        <h6>Useful Links</h6>
-                        <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Delivery infomation</a></li>
-                        </ul>
-                        <ul>
-                            <li><a href="#">Our Services</a></li>
-                            <li><a href="{% url 'contact' %}">Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12">
-                    <div class="footer__widget">
-                        <h6>Join Our Newsletter Now</h6>
-                        <p>Get E-mail updates about our latest Products and Offers.</p>
-                        <form action="#">
-                            <input type="text" placeholder="Enter your mail">
-                            <button type="submit" class="site-btn">Subscribe</button>
-                        </form>
-                    </div>
+                    <ul>
+                        <li>Address: Shaban Robert, Posta</li>
+                        <li>Phone: +255 764 264 862</li>
+                        <li>Email: gerardsanga7@gmail.com</li>
+                    </ul>
                 </div>
             </div>
-
+            <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+                <div class="footer__widget">
+                    <h6>Useful Links</h6>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Delivery infomation</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#">Our Services</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="footer__widget">
+                    <h6>Join Our Newsletter Now</h6>
+                    <p>Get E-mail updates about our latest Products and Offers.</p>
+                    <form action="#">
+                        <input type="text" placeholder="Enter your mail">
+                        <button type="submit" class="site-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </footer>
-    <!-- Footer Section End -->
 
-    <!-- Js Plugins -->
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.js"></script>
+    </div>
+</footer>
+<!-- Footer Section End -->
 
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
-    <script src="{% static 'js/mixitup.min.js' %}"></script>
-    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-    <script src="https://js.stripe.com/v3/"></script>
-    <script>
-        $("#checkout").validate();
-    </script>
-    <script nonce="">
+<!-- Js Plugins -->
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.js"></script>
+
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'js/jquery.slicknav.js' %}"></script>
+<script src="{% static 'js/mixitup.min.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
+<!-- LocationField Autocomplete -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCIsoee2PrfS9I7y8c-W0Yx8q4OtxxAF4&callback=initMap&libraries=&v=weekly"
+        defer
+></script>
+<script type="text/javascript">
+      let map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: -6.8023, lng: 39.2083 },
+          zoom: 11,
+        });
+      }
+</script>
+
+<script type="text/javascript">
+        function validate(){
+            var form = document.getElementById("checkout");
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                console.log("Form Prevented");
+            })
+            console.log("Button Clicked");
+            var phone = document.getElementById("phone").value;
+            if(phone.length < 13){
+                console.log("Please write a valid phone number");
+                document.getElementById("phone").focus();
+            }
+        }
+</script>
+<script nonce="">
         // Create a Stripe client.
         var stripe = Stripe(
             'pk_test_51HItOtLilkzwV54uYa8PVeEO81eYUWZmlvaaTwMay7T0ixCLW3eAW9eGBcP5in1tWyg8z8516QYHq02s8v1TNpNN00dPGv0cx5'
@@ -149,9 +178,19 @@
                 currentCardForm.hide()
             }
         })
-    </script>
-     <script>
+</script>
+<script>
         $(document).ready(function () {
+             $("form#ratingForm").submit(function(e){
+                e.preventDefault(); // prevent the default click action from being performed
+                if ($("#ratingForm :radio:checked").length == 0) {
+                    $('#status').html("nothing checked");
+                    return false;
+                } else {
+                    $('#status').html( 'You picked ' + $('input:radio[name=rating]:checked').val() );
+                }
+            });
+            
             var $btnSets = $('#responsive'),
                 $btnLinks = $btnSets.find('a');
 
@@ -177,4 +216,4 @@
                 }
             );
         });
-    </script>
+</script>

@@ -21,26 +21,27 @@
      <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
      <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
      <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
-
+     <link rel="stylesheet" href="{% static 'flags/sprite.css' %}">
      
      <script src="https://js.stripe.com/v3/"></script>
+     <style>
+        #map {
+            height: 50%;
+         }
+        
+     </style>
      {% block extra_links %}
      {% endblock extra_links %}
      {% block custom_css %}
      {% endblock custom_css %}
-     <style>
-         .dropdown:hover>.dropdown-menu {
-             display: block;
-         }
+    <style>
+/* For Add Modal Ends */
+/* my stuff */
+#status, button {
+    margin: 20px 0;
+}
 
-         .dropdown>.dropdown-toggle:active {
-             /*Without this, clicking will make it sticky*/
-             pointer-events: none;
-         }
-         .error {
-             color: red;
-         }
-     </style>
+    </style>
 
  </head>
 
@@ -94,7 +95,7 @@
              <div class="col-lg-3">
                  <div class="header__logo">
                      <a style="text-decoration: none;color: inherit;" href="{% url 'home_page' %}"><img src="{% static 'img/download.png' %}" width="60" height="60">
-                    <span style="font-size: 25px;font-weight: 700" class="ml-2">Mavazi<span style="color: #7FAD39">Online</span></span>
+                    <span style="font-size: 25px;font-weight: 700" class="ml-2">Mazao<span style="color: #7FAD39">Online</span></span>
                     </a>
                  </div>
              </div>
@@ -142,7 +143,7 @@
                                  <span class="arrow_carrot-down"></span>
                              </div>
                             <input type="text" name="q" required placeholder="Search product here...">
-                            <button type="submit" class="site-btn">SEARCH</button>
+                            <button style="margin-top: -9px" type="submit" class="site-btn">SEARCH</button>
                          </form>
                      </div>
                  </div>
