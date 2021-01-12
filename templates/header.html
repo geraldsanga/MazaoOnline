@@ -59,10 +59,10 @@
                      <div class="header__top__right">
                          {% if request.user.is_anonymous %}
                          <div class="header__top__right__social">
-                             <a href="{% url 'register_view' %}"><i class="fa fa-user"></i> Sign Up</a>
+                             <a href="{% url 'register_view' %}"><i class="fa fa-user-plus"></i> Sign Up</a>
                          </div>
                          <div class="header__top__right__auth">
-                             <a href="{% url 'login_view' %}"><i class="fa fa-user"></i> Login</a>
+                             <a href="{% url 'login_view' %}"><i class="fa fa-sign-in"></i> Login</a>
                          </div>
                          {% else %}
                          <div class="header__top__right__auth">
@@ -71,18 +71,14 @@
                                      {{ request.user|cart_product_count }} </span>
                                  <i class="fa fa-shopping-cart"></i> <span style="font-weight: 900;">CART</span></a>
                          </div>
-                         <div class="header__top__right__auth ml-3">
-                             <div class="dropdown">
-                                 <button style="background-color: #7fad39;border: #7fad39;" class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
-                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                     ACCOUNT
-                                 </button>
-                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                     <a class="dropdown-item" href="{% url 'profile' request.user.id %}">Profile</a>
-                                     <a class="dropdown-item" href="{% url 'logout_view' %}">Logout</a>
-                                 </div>
-                             </div>
-                         </div>
+                        {% if request.user.is_authenticated %}
+                        <div class="header__top__right__auth ml-2">
+                            <a href="{% url 'profile' request.user.id %}"><i style="color: blue;" class="fa fa-user"></i> Profile</a>
+                        </div>
+                        <div class="header__top__right__auth ml-2">
+                            <a href="{% url 'logout_view' %}"><i style="color: red;" class="fa fa-sign-out"></i> Logout</a>
+                        </div>
+                        {% endif %}
                          {% endif %}
 
                      </div>

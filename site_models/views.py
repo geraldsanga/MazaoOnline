@@ -38,10 +38,10 @@ def checkout_page(request, pk):
         try:
             order = Order.objects.get(customer=request.user, ordered=False)
             if form.is_valid():
-                street_address = form.cleaned_data.get("street_address")
-                country = form.cleaned_data.get("country")
-                phone = form.cleaned_data.get("phone")
-                city = form.cleaned_data.get("city")
+                street_address = request.POST.get("street_address")
+                country = request.POST.get("country")
+                phone = request.POST.get("phone")
+                city = request.POST.get("city")
 
                 billing_address = BillingAddress(
                     customer = request.user,
@@ -62,15 +62,15 @@ def checkout_page(request, pk):
 
 def home_page(request):
     unsorted_products = ProductReview.objects.values('product').annotate(average_rating=Avg('rating'))
-    print(unsorted_products)
+    # print(unsorted_products)
     sorted_products = sorted(unsorted_products, key=itemgetter('average_rating'), reverse=True)[0:3]
-    print(sorted_products)
+    # print(sorted_products)
     recomended_products = []
     for _ in sorted_products:
         product = Product.objects.get(id=_['product'])
         if product:
             recomended_products.append(product)
-    print(recomended_products)
+    # print(recomended_products)
     category_list = Category.objects.all()
     product_list = Product.objects.all().order_by('-date_created')
     sample_products = product_list[:3]
@@ -85,8 +85,15 @@ def home_page(request):
 
 
 @login_required(login_url="login_view")
-def save_order(request):
-    pass
+def order_tracking(request, order_id):
+    context = dict()
+    order = Order.objects.get(id=order_id)
+    context["order"] = order
+    if request.method == "POST":
+        order.delivered = True
+        order.save()
+    
+    return render(request, "order_tracking.html", context)
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -133,9 +140,12 @@ def product_detail(request, slug):
 @login_required(login_url="login_view")
 def delete_review(request, q_id):
     product = request.POST.get("product")
+    product_obj = Product.objects.get(id=int(product))
     ProductReview.objects.get(id=q_id).delete()
+    slug = product_obj.slug
+   
     messages.success(request, "Review deleted.")
-    return redirect("product", int(product))
+    return redirect("product", slug)
 
 @login_required(login_url="login_view")
 def update_review(request, q_id, user_id):
@@ -151,7 +161,7 @@ def update_review(request, q_id, user_id):
     q_object.content = content
     messages.success(request, "Review updated.")
     q_object.save()
-    return redirect("product", q_object.product.id)
+    return redirect("product", q_object.product.slug)
 
 
 @login_required(login_url="login_view")
@@ -160,13 +170,13 @@ def add_review(request):
     rating = request.POST.get("rating")
     content = request.POST.get("content")
     product_id = request.POST.get("product")
-
+    product_obj = Product.objects.get(id=int(product_id))
     q_object.rating = rating
     q_object.content = content
     q_object.user = request.user
-    q_object.product = Product.objects.get(id=int(product_id))
+    q_object.product = product_obj
     q_object.save()
-    return redirect("product", int(product_id))
+    return redirect("product", product_obj.slug)
 
 
 
@@ -219,42 +229,31 @@ class CheckoutView(LoginRequiredMixin, View):
         
         try:
             order = Order.objects.get(customer=self.request.user, ordered=False)
-            if form.is_valid():
-                street_address = form.cleaned_data.get("street_address")
-                country = form.cleaned_data.get("country")
-                phone = form.cleaned_data.get("phone")
-                city = form.cleaned_data.get("city")
-                payment_option = form.cleaned_data.get("payment_option")
-
-                billing_address = BillingAddress(
-                    customer = self.request.user,
-                    country = country,
-                    city = city,
-                    street_address = street_address,
-                    phone = phone
-                )
-                
-                # if len(street_address) < 2:
-                #     for value in street_address:
-                #         if value in ["#", "@", "!", "/", ")","%","_","-",","]:
-                #             messages.error(self.request, "Bad input for street address")
-                #             return redirect("checkout")
-                #     else:
-                billing_address.save()
-                order.billing_address = billing_address
-                order.save()
-                # else:
-                #     messages.error(self.request, "Bad input for street address")
-                #     return redirect("checkout")
-                # print("Checked Out.")
-                
-                if payment_option == 'S':
-                    return redirect("payment", payment_option="stripe")
-                elif payment_option == 'P':
-                    return redirect("cash-delivery", payment_option="cash")
-                else:
-                    messages.warning(self.request, "Invalid payment option.", fail_silently=False)
-                    return redirect("checkout")
+            street_address = self.request.POST.get("street")
+            country = self.request.POST.get("country")
+            phone = self.request.POST.get("phone")
+            city = self.request.POST.get("city")
+            payment_option = self.request.POST.get("payment_option")
+            print(country, street_address, phone, city, payment_option)
+            billing_address = BillingAddress(
+                customer = self.request.user,
+                country = country,
+                city = city,
+                street_address = street_address,
+                phone = phone
+            )
+            
+            billing_address.save()
+            order.billing_address = billing_address
+            order.save()
+            
+            if payment_option == 'S':
+                return redirect("payment", payment_option="stripe")
+            elif payment_option == 'P':
+                return redirect("cash-delivery", payment_option="cash")
+            else:
+                messages.warning(self.request, "Invalid payment option.", fail_silently=False)
+                return redirect("checkout")
 
         except ObjectDoesNotExist:
             

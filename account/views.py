@@ -80,4 +80,4 @@ def profile_view(request, id):
 
 def logout_view(request):
     logout(request)
-    return redirect('login_view')
+    return redirect('home_page')

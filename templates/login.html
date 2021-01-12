@@ -13,26 +13,37 @@
             background: -webkit-linear-gradient(top, #33537a 0%,#00912b 100%); /* Chrome10+,Safari5.1+ */
         }
     </style>
-
 </head>
-
 <body class="text-center">
-<form class="form-signin" method="POST">
-    {% csrf_token %}
-    <!-- <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72"> -->
-    <h1 style="color: #fff" class="h3 mb-3 font-weight-bolder">Please Log In</h1>
-
-    <label for="inputEmail" class="sr-only">Username</label>
-    <input type="text" id="inputEmail" class="form-control mb-2" placeholder="Username" name="username" required autofocus>
-
-    <label for="inputEmail" class="sr-only">Password</label>
-    <input type="password" id="inputEmail" class="form-control" name="password" placeholder="Password" required
-           autofocus>
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
-    <p style="color: #fff" class="mt-2 font-weight-bolder">Dont have an account? <a href="{% url 'register_view' %}"><span style="color: #fff;">Sign Up</span></a></p>
-    <p style="color: #fff" class="mt-3 mb-3 font-weight-bolder">&copy;MazaoOnline 2020</p>
-</form>
+    <div class="row">
+        <div class="col-12">
+            {% include "messages.html" %}
+        </div>
+        <div class="col-12">
+            <form class="form-signin" method="POST">
+                {% csrf_token %}
+                <!-- <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72"> -->
+                <h1 style="color: #fff" class="h3 mb-3 font-weight-bolder">Please Log In</h1>
+            
+                <label for="inputEmail" class="sr-only">Username</label>
+                <input type="text" id="inputEmail" class="form-control mb-2" placeholder="Username" name="username" required autofocus>
+            
+                <label for="inputEmail" class="sr-only">Password</label>
+                <input type="password" id="inputEmail" class="form-control" name="password" placeholder="Password" required
+                       autofocus>
+            
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+                <p style="color: #fff" class="mt-2 font-weight-bolder">Dont have an account? <a href="{% url 'register_view' %}"><span style="color: #fff;">Sign Up</span></a></p>
+                <p style="color: #fff" class="mt-3 mb-3 font-weight-bolder">&copy;MazaoOnline <span id="date"></span></p>
+            </form>
+            
+        </div>
+    </div>
 
 </body>
+<script type="text/javascript">
+    var date = new Date();
+    var date_p = document.getElementById("date");
+    date_p.innerHTML = date.getFullYear();
+</script>
 </html>

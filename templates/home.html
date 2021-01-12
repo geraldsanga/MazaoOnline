@@ -135,7 +135,7 @@
                 {% for product in recomended_products %}
                     <div class="col-lg-3">
                         <div class="categories__item set-bg" data-setbg="{{product.image.url}}">
-                            <h5><a href="{% url 'product' product.id %}">{{product.name}}</a></h5>
+                            <h5><a href="{% url 'product' product.slug %}">{{product.name}}</a></h5>
                         </div>
                     </div>
                 {% endfor %}

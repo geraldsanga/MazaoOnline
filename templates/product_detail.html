@@ -80,14 +80,14 @@
                         </a>
                         <a href="{{ object.remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
                             Remove from cart
-
                         </a>
-
                     </div>
                     {% for q in qs %}
                       <div class="card mb-3">
                         <div class="card-header">
                             Review by: {{q.user}}
+                            <br>
+                            {{q.date_reviewed}}
                             {% with ''|center:q.rating as range %}
                             {% for _ in range %}
                               <i style="color: yellow;font-size: 28px" title="{{q.rating}} Stars" class="fa fa-star float-right"></i>
@@ -127,7 +127,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Send message</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
                             </div>
                             </form>

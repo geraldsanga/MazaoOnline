@@ -72,11 +72,12 @@ class Order(models.Model):
     )
     payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, null=True, blank=True)
     ordered = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField()
 
 
     def __str__(self):
-        return f"{self.customer} - {self.product.name}"
+        return f"#{self.id}-Order by {self.customer} - {self.ordered_date.date()}"
     
     def get_total(self)->int:
         total = int()
@@ -84,8 +85,7 @@ class Order(models.Model):
             total += product_order.get_total_product_price()
         return total
     
-    
-
+   
 class BillingAddress(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     country = CountryField(multiple=False)
@@ -138,3 +138,27 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"review for {self.product} by {self.user}"
+
+
+class Store(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    phone = models.CharField(max_length=13)
+
+    def __str__(self):
+        return f"{self.name}-{self.location}"
+
+
+class CurrentOrderStore(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    ordered_product = models.ManyToManyField(Order)
+    date_received = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.ordered_product} currently in {self.store}"
+    
+    class Meta:
+        ordering = (
+            "-id",
+        )
+    
