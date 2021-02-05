@@ -237,8 +237,8 @@ class CheckoutView(LoginRequiredMixin, View):
             print(country, street_address, phone, city, payment_option)
             billing_address = BillingAddress(
                 customer = self.request.user,
-                country = country,
-                city = city,
+                country = "TZ",
+                city = "Dar es Salaam",
                 street_address = street_address,
                 phone = phone
             )
