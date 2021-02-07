@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django_countries.fields import CountryField
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -18,20 +20,111 @@ class Product(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='products/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now=True)
+    slug = models.SlugField()
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+    
+    def add_to_cart_url(self):
+        return reverse("add-to-cart", kwargs={
+            "slug": self.slug
+            }
+        )
+    
+    def remove_from_cart_url(self):
+        return reverse("remove-from-cart", kwargs={
+            "slug": self.slug
+            }
+        )
 
     class Meta:
         verbose_name_plural = 'Products'
 
 
+class OrderProduct(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    ordered = models.BooleanField(default=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+
+    def __str__(self):
+        return f"{self.quantity} {self.product.name}"
+    
+    def get_total_product_price(self)->int:
+        return self.quantity * self.product.price
+    
+    def total_item_price(self)->int:
+        return self.quantity*self.product.price
+    
+    def get_final_price(self):
+        return self.total_item_price()
+    
+
+
 class Order(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
-    country = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
-    town = models.CharField(max_length=255)
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=255)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ManyToManyField(OrderProduct)
+    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, null=True, blank=True)
+    ordered = models.BooleanField(default=False)
+    ordered_date = models.DateTimeField()
+
+
+    def __str__(self):
+        return f"{self.customer} - {self.product.name}"
+    
+    def get_total(self)->int:
+        total = int()
+        for product_order in self.product.all():
+            total += product_order.get_total_product_price()
+        return total
+    
+    
+
+class BillingAddress(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    country = CountryField(multiple=False)
+    city = models.CharField(max_length=50)
+    street_address = models.CharField(max_length=255)
+    phone = models.CharField(max_length=13)
+
+    def __str__(self):
+        return self.customer.username
+    
+    class Meta:
+        ordering = [
+            "-id"
+        ]
+    
+
+class Payment(models.Model):
+    stripe_charge_id = models.CharField(max_length=50)
+    customer = models.ForeignKey(User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    amount = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    
+    def __str__(self):
+        return self.customer.username
+    
+    class Meta:
+        ordering = [
+            "-id"
+        ]
+
+class Contact(models.Model):
+    phone = models.CharField(max_length=13, null=True, blank=True)
+    message = models.TextField(max_length=500)
+
+    def __str__(self):
+        return self.phone
+    

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+{% block custom_css %}
+<style>
+    .add-to-cart:hover {
+        color: brown;
+    }
+
+    .remove-from-cart:hover {
+        color: brown;
+    }
+</style>
+
+{% endblock custom_css %}
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+{% include "messages.html" %}
+
+<!-- Featured Section Begin -->
+<section class="featured spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2>Contact Us</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="media-container-column col-lg-8" data-form-type="formoid">
+                        <div data-form-alert="" hidden="">
+                            Thanks for filling out the form!
+                        </div>
+
+                        <form class="mbr-form" method="POST">
+                                {% csrf_token %}
+                            <div class="row row-sm-offset">
+                                {% if not request.user.is_authenticated %}
+                                <div class="col-md-4 multi-horizontal" data-for="name">
+                                    <div class="form-group">
+                                        <label class="form-control-label mbr-fonts-style display-7"
+                                            for="name-form1-2w">Name</label>
+                                        <input type="text" class="form-control" name="name" data-form-field="Name"
+                                            required="" id="name-form1-2w">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 multi-horizontal" data-for="email">
+                                    <div class="form-group">
+                                        <label class="form-control-label mbr-fonts-style display-7"
+                                            for="email-form1-2w">Email</label>
+                                        <input type="email" class="form-control" name="email" data-form-field="Email"
+                                            required="" id="email-form1-2w">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 multi-horizontal" data-for="phone">
+                                    <div class="form-group">
+                                        <label class="form-control-label mbr-fonts-style display-7"
+                                            for="phone-form1-2w">Phone</label>
+                                        <input type="tel" class="form-control" name="phone" data-form-field="Phone"
+                                            id="phone-form1-2w">
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group" data-for="message">
+                                <label class="form-control-label mbr-fonts-style display-7"
+                                    for="message-form1-2w">Message</label>
+                                <textarea required type="text" class="form-control" name="message" rows="7"
+                                    data-form-field="Message" id="message-form1-2w"></textarea>
+                            </div>
+
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-primary btn-form display-4">LAUNCH</button>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Featured Section End -->
+
+{% endblock content %}

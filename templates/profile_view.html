@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block custom_css %}
+<style>
+    .square,
+    .btn {
+        border-radius: 0px !important;
+    }
+
+    /* -- color classes -- */
+    .coralbg {
+        background-color: #FA396F;
+    }
+
+    .coral {
+        color: #FA396f;
+    }
+
+    .turqbg {
+        background-color: #46D8D2;
+    }
+
+    .turq {
+        color: #46D8D2;
+    }
+
+    .white {
+        color: #fff !important;
+    }
+
+    /* -- The "User's Menu Container" specific elements. Custom container for the snippet -- */
+    div.user-menu-container {
+        z-index: 10;
+        background-color: #fff;
+        margin-top: 20px;
+        background-clip: padding-box;
+        opacity: 0.97;
+        filter: alpha(opacity=97);
+        -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+    }
+
+    div.user-menu-container .btn-lg {
+        padding: 0px 12px;
+    }
+
+    div.user-menu-container h4 {
+        font-weight: 300;
+        color: #8b8b8b;
+    }
+
+    div.user-menu-container a,
+    div.user-menu-container .btn {
+        transition: 1s ease;
+    }
+
+    div.user-menu-container .thumbnail {
+        width: 100%;
+        min-height: 200px;
+        border: 0px !important;
+        padding: 0px;
+        border-radius: 0;
+        border: 0px !important;
+    }
+
+    /* -- Vertical Button Group -- */
+    div.user-menu-container .btn-group-vertical {
+        display: block;
+    }
+
+    div.user-menu-container .btn-group-vertical>a {
+        padding: 20px 25px;
+        background-color: #46D8D2;
+        color: white;
+        border-color: #fff;
+    }
+
+    div.btn-group-vertical>a:hover {
+        color: white;
+        border-color: white;
+    }
+
+    div.btn-group-vertical>a.active {
+        background: #FA396F;
+        box-shadow: none;
+        color: white;
+    }
+
+    /* -- Individual button styles of vertical btn group -- */
+    div.user-menu-btns {
+        padding-right: 0;
+        padding-left: 0;
+        padding-bottom: 0;
+    }
+
+    div.user-menu-btns div.btn-group-vertical>a.active:after {
+        content: '';
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        margin-top: -13px;
+        border-left: 0;
+        border-bottom: 13px solid transparent;
+        border-top: 13px solid transparent;
+        border-left: 10px solid #46D8D2;
+    }
+
+    /* -- The main tab & content styling of the vertical buttons info-- */
+    div.user-menu-content {
+        color: #323232;
+    }
+
+    ul.user-menu-list {
+        list-style: none;
+        margin-top: 20px;
+        margin-bottom: 0;
+        padding: 10px;
+        border: 1px solid #eee;
+    }
+
+    ul.user-menu-list>li {
+        padding-bottom: 8px;
+        text-align: center;
+    }
+
+    div.user-menu div.user-menu-content:not(.active) {
+        display: none;
+    }
+
+    /* -- The btn stylings for the btn icons -- */
+    .btn-label {
+        position: relative;
+        left: -12px;
+        display: inline-block;
+        padding: 6px 12px;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 3px 0 0 3px;
+    }
+
+    .btn-labeled {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    /* -- Custom classes for the snippet, won't effect any existing bootstrap classes of your site, but can be reused. -- */
+
+    .user-pad {
+        padding: 20px 25px;
+    }
+
+    .no-pad {
+        padding-right: 0;
+        padding-left: 0;
+        padding-bottom: 0;
+    }
+
+    .user-details {
+        background: #eee;
+        min-height: 333px;
+    }
+
+    .user-image {
+        max-height: 200px;
+        overflow: hidden;
+    }
+
+    .overview h3 {
+        font-weight: 300;
+        margin-top: 15px;
+        margin: 10px 0 0 0;
+    }
+
+    .overview h4 {
+        font-weight: bold !important;
+        font-size: 40px;
+        margin-top: 0;
+    }
+
+    .view {
+        position: relative;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+
+    .view p {
+        margin-top: 20px;
+        margin-bottom: 0;
+    }
+
+    .caption {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: rgba(70, 216, 210, 0.44);
+        width: 100%;
+        height: 100%;
+        padding: 2%;
+        display: none;
+        text-align: center;
+        color: #fff !important;
+        z-index: 2;
+    }
+
+    .caption a {
+        padding-right: 10px;
+        color: #fff;
+    }
+
+    .info {
+        display: block;
+        padding: 10px;
+        background: #eee;
+        text-transform: uppercase;
+        font-weight: 300;
+        text-align: right;
+    }
+
+    .info p,
+    .stats p {
+        margin-bottom: 0;
+    }
+
+    .stats {
+        display: block;
+        padding: 10px;
+        color: white;
+    }
+
+    .share-links {
+        border: 1px solid #eee;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .square,
+    .btn {
+        border-radius: 0px !important;
+    }
+
+    /* -- media query for user profile image -- */
+    @media (max-width: 767px) {
+        .user-image {
+            max-height: 400px;
+        }
+    }
+    #go_shopping:hover {
+        text-decoration: none;
+        color: darkgreen;
+    }
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+    {% include "messages.html" %}
+    <div class="container">
+        <div class="row user-menu-container square">
+            <div class="col-md-7 user-details">
+                <div class="row coralbg white">
+                    <div class="col-md-6 no-pad">
+                        <div class="user-pad">
+                            <h3>Welcome back, {{ object.username.title }}</h3>
+                            <h4 class="white">{{ object.profile.street_address }}, {{ object.profile.city }}</h4>
+                            <h4 class="white">{{ object.profile.country.name }}</h4>
+                            <h4 class="white">{{ object.profile.phone }}</h4>
+                            <button style="margin-top: 10px;" type="button" class="btn btn-labeled btn-info" data-toggle="modal" data-target="#exampleModal" >
+                                <span class="btn-label"><i class="fa fa-pencil"></i></span>Update
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 no-pad">
+                        <div class="user-image">
+                            {% if object.profile.image %}
+                            <img style="border-radius: 5%;" src="{{ object.profile.image.url }}"
+                            class="img-responsive thumbnail">
+                            {% else %}
+                            <img style="border-radius: 5%;" src="{% static 'img/avatar.png' %}"
+                                class="img-responsive thumbnail">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row overview" style="margin-top: 20px;">
+                    <div class="col-md-4 user-pad text-center">
+                        <h3>TOTAL ORDERS</h3>
+                        <h4>{{ object.order_set.count }}</h4>
+                    </div>
+                    <div class="col-md-4 user-pad text-center">
+                        <h3>COMPLETED ORDERS</h3>
+                        <h4>{{ order_counter }}</h4>
+                    </div>
+                    <div class="col-md-4 user-pad text-center">
+                        <h3>ONHOLD ORDERS</h3>
+                        <h4>{{ onhold }}</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 user-menu user-pad">
+                <div class="user-menu-content active">
+                    <h3>
+                        Recent Orders
+                    </h3>
+                    {% if qs %}
+                    <ul style="list-style: none;" class="user-menu-list">
+                        {% for order in qs %}
+                        <li>
+                            <h4>{% for product in order.product.all %}
+                              {{ product }},
+                            {% endfor %}Status:
+                            {% if order.ordered %}
+                            <span style="color: green;">Ordered</span>
+                            {% else %}
+                            <span style="color: red;">Not Ordered</span>
+                            {% endif %}
+                            </h4>
+                        </li>
+                        {% endfor %}
+                       
+                        <li style="margin-top: 10px;">
+                            <a href="{% url 'all-orders' %}">
+                                <button type="button" class="btn btn-labeled btn-success">
+                                    <span class="btn-label">View all orders</button>
+                            </a>
+                        </li>
+                    </ul>
+                    {% else %}
+                    <h3>No Orders Yet!</h3>
+                    <small><a style="text-decoration: none;" id="go_shopping" href="/">Go Shopping</a></small>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Username</label>
+                      <input name="username" type="text" value="{{ object.username }}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
+                      <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Firstname</label>
+                      <input name="first_name" type="text" value="{{ object.first_name }}" class="form-control" id="exampleInputPassword1" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Lastname</label>
+                        <input name="last_name" type="text" value="{{ object.last_name }}" class="form-control" id="exampleInputPassword1" placeholder="">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">City</label>
+                        <input name="city" type="text" value="{{ object.profile.city }}" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">Street</label>
+                        <input name="street" type="text" value="{{ object.profile.street_address }}" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">Phone</label>
+                        <input name="phone" type="text" value="{{ object.profile.phone }}" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </form>
+            </div>
+            <div class="modal-footer">
+            
+            </div>
+        </div>
+        </div>
+    </div>
+    {% endblock content %}
