@@ -25,7 +25,6 @@ def register_view(request):
                 login(request, user_to_login)
                 return redirect('home_page')
             else:
-                print("passwords did not match")
                 messages.error(request, "Your passwords did not match")
     return render(request, 'register.html', {})
 
@@ -81,4 +80,4 @@ def profile_view(request, id):
 
 def logout_view(request):
     logout(request)
-    return redirect('login_view')
+    return redirect('home_page')

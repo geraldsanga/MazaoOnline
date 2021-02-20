@@ -26,8 +26,14 @@
                 <!--Grid column-->
                 <div class="col-md-6 mb-4">
 
-                    <img src="{{ object.image.url }}"
-                        class="img-fluid" alt="">
+                    <div class="row">
+                        <div class="col-12">
+                            <img src="{{ object.image.url }}" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-12 mt-3">
+                              <a data-toggle="modal" data-target="#addReviewModal" href="javascript:void(0)" class="btn btn-primary">Add Review</a>
+                        </div>
+                    </div>
 
                 </div>
                 <!--Grid column-->
@@ -74,10 +80,85 @@
                         </a>
                         <a href="{{ object.remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
                             Remove from cart
-
                         </a>
-
                     </div>
+                    {% for q in qs %}
+                      <div class="card mb-3">
+                        <div class="card-header">
+                            Review by: {{q.user}}
+                            <br>
+                            {{q.date_reviewed}}
+                            {% with ''|center:q.rating as range %}
+                            {% for _ in range %}
+                              <i style="color: yellow;font-size: 28px" title="{{q.rating}} Stars" class="fa fa-star float-right"></i>
+                            {% endfor %}
+                            {% endwith %}
+                        </div>
+                        <div class="card-body">
+                            <!-- <h5 class="card-title">Special title treatment</h5> -->
+                            <p class="card-text">{{q.content}}</p>
+                            {% if q.user == request.user %}
+                              <a data-toggle="modal" data-target="#exampleModal{{q.id}}" href="javascript:void(0)" class="btn btn-secondary">Edit</a>
+                              <a data-toggle="modal" data-target="#exampleModalDelete{{q.id}}" href="javascript:void(0)" class="btn btn-danger">Delete</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                        <div class="modal fade" id="exampleModal{{q.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Review</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'update_review' q.id q.user.id %}">
+                                {% csrf_token %}
+                                <div class="form-group mt-3">
+                                    <label for="message-text" class="col-form-label">Rating <i style="color: yellow;font-size: 28px" class="fa fa-star float-right"></i>:</label>
+                                    <input type="number" max="5" name="rating" min="0" value={{q.rating}} class="form-control">
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="message-text" class="col-form-label">Content:</label>
+                                    <textarea class="form-control" name="content" id="message-text">{{q.content|safe}}</textarea>
+                                </div>
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                            </div>
+                            </form>
+                        </div>
+                        </div>
+
+                        <!-- Delete Modal -->
+                        <div class="modal fade" id="exampleModalDelete{{q.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete Review</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'delete_review' q.id %}">
+                                {% csrf_token %}
+                                Delete Review?
+                                <input type="hidden" name="product" value="{{object.id}}">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </div>
+                            </div>
+                            </form>
+                        </div>
+                        </div>
+                    {% endfor %}
                     <!--Content-->
 
                 </div>
@@ -88,5 +169,39 @@
         </div>
     </section>
     <!-- Featured Section End -->
+
+    <!-- Add Review Modal -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Review</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form method="POST" action="{% url 'add_review' %}">
+        {% csrf_token %}
+        <input type="hidden" name="product" value="{{object.id}}">
+        <!-- <input type="hidden" name="user" value="{{object.id}}"> -->
+        <div class="form-group mt-3">
+            <label for="message-text" class="col-form-label">Rating <i style="color: yellow;font-size: 28px" class="fa fa-star float-right"></i>:</label>
+            <input type="number" max="5" name="rating" min="0" value="1" class="form-control">
+        </div>
+        <div class="form-group mt-3">
+            <label for="message-text" class="col-form-label">Content:</label>
+            <textarea class="form-control" name="content" id="message-text"></textarea>
+        </div>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add Review</button>
+    </div>
+    </div>
+    </form>
+</div>
+</div>
 
     {% endblock content %}

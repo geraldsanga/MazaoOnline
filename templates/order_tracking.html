@@ -262,56 +262,59 @@
     </div>
     {% include "messages.html" %}
     <div class="container">
+        <h5 class="mb-3">Order ID: #{{order.id}}</h5>
+        <h5 class="mb-3">Delivery Status: {% if order.delivered %}
+            <span style="color: green;">Delivered</span> {% else %} <span style="color: red;">Not Delivered</span>
+        {% endif %}</h5>
+        {% if order.customer == request.user and order.delivered == False%}
+        <h5 class="mb-3" style="font-weight: bold;">We're processing your order</h5>
+            <a data-toggle="modal" data-target="#exampleModal" href="javascript:void">
+                <button class="btn btn-sm btn-success">Confirm Delivery</button>
+            </a>
+        {% endif %}
+        <a href="{% url 'all-orders' %}">
+            <button class="float-right btn btn-sm btn-info"><i class="mr-1 fa fa-arrow-left"></i>Back</button>
+        </a>
         <table class="table">
             <thead class="thead-dark">
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Transaction ID</th>
-                <th scope="col">Products</th>
-                <th scope="col">Total Price</th>
-                <th scope="col">Amount Paid</th>
-                <th scope="col">Ordered Date</th>
-                <th scope="col">Status</th>
                 <th scope="col">Location</th>
-                <th scope="col">Delivery Status</th>
+                <th scope="col">Date Received</th>
               </tr>
             </thead>
             <tbody>
-                {% for order in orders %}
+                {% for current in order.currentorderstore_set.all %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ order.payment.stripe_charge_id }}</td>
-                    <td>
-                    {% for product in order.product.all %}
-                        <li>{{ product }}</li>
-                    {% endfor %}
-                    </td>
-                    <td>{{ order.get_total|intcomma }} /=</td>
-                    <td>{{ order.payment.amount|intcomma }} /=</td>
-                    <td>{{ order.ordered_date }}</td>
-                    <td>
-                        {% if order.ordered %}
-                          <span style="color: green;">Ordered</span>
-                        {% else %}
-                        <span style="color: red;">Not Ordered</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if order.ordered %}
-                        <a id="track" style="color: #323232;text-underline-position: above;" href="{% url 'order_tracking' order.id %}">Track</a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if order.delivered %}
-                        <span style="color: green;">Delivered</span>
-                        {% else %}
-                        <span style="color: red;">Not Delivered</span>
-                        {% endif %}
-                    </td>
-                    </tr>
+                    <td>{{current.store}}</td>
+                    <td>{{current.date_received}}</td>
+                </tr>
                 {% endfor %}
             </tbody>
           </table>
           
     </div>
+    <!-- Confirm Delivery Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirm Delivery</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                {% csrf_token %}
+                Confirm Delivery?
+                <input type="hidden" name="order" value="{{order.id}}">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Confirm</button>
+            </div>
+            </div>
+            </form>
+        </div>
+        </div>
     {% endblock content %}

@@ -1,14 +1,23 @@
-from django.contrib.auth.decorators import login_required
+from .models import Category, Product, Order, OrderProduct, BillingAddress, Payment, Contact,\
+    ProductReview
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CheckoutForm
-from django.core.exceptions import ObjectDoesNotExist
-from .models import Category, Product, Order, OrderProduct, BillingAddress, Payment, Contact
-from django.contrib import messages
-from django.views.generic import View, DetailView
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import View, DetailView
+from django.contrib.auth.models import User
+from django.contrib import messages
 from django.utils import timezone
+from .forms import CheckoutForm
+from django.db.models import Q, Avg
+from functools import reduce
+from operator import itemgetter
 import stripe
+# from _functools import reduce
+
+
 stripe.api_key = "sk_test_51HItOtLilkzwV54uwf5LfpsQp6302tMZS2bOMjb9S9XaqOmuJNPQEmUseDupisP55UOV3knPneAVOaZXsqQlqKjR00CdeIMoqO"
 
 
@@ -29,10 +38,10 @@ def checkout_page(request, pk):
         try:
             order = Order.objects.get(customer=request.user, ordered=False)
             if form.is_valid():
-                street_address = form.cleaned_data.get("street_address")
-                country = form.cleaned_data.get("country")
-                phone = form.cleaned_data.get("phone")
-                city = form.cleaned_data.get("city")
+                street_address = request.POST.get("street_address")
+                country = request.POST.get("country")
+                phone = request.POST.get("phone")
+                city = request.POST.get("city")
 
                 billing_address = BillingAddress(
                     customer = request.user,
@@ -52,6 +61,16 @@ def checkout_page(request, pk):
 
 
 def home_page(request):
+    unsorted_products = ProductReview.objects.values('product').annotate(average_rating=Avg('rating'))
+    # print(unsorted_products)
+    sorted_products = sorted(unsorted_products, key=itemgetter('average_rating'), reverse=True)[0:3]
+    # print(sorted_products)
+    recomended_products = []
+    for _ in sorted_products:
+        product = Product.objects.get(id=_['product'])
+        if product:
+            recomended_products.append(product)
+    # print(recomended_products)
     category_list = Category.objects.all()
     product_list = Product.objects.all().order_by('-date_created')
     sample_products = product_list[:3]
@@ -59,14 +78,22 @@ def home_page(request):
         'products': product_list,
         'categories': category_list,
         'sample_products': sample_products,
+        'recomended_products': recomended_products,
         # 'latest_products': Product.objects.order_by('-id')[:3]
     }
     return render(request, 'home.html', context)
 
 
 @login_required(login_url="login_view")
-def save_order(request):
-    pass
+def order_tracking(request, order_id):
+    context = dict()
+    order = Order.objects.get(id=order_id)
+    context["order"] = order
+    if request.method == "POST":
+        order.delivered = True
+        order.save()
+    
+    return render(request, "order_tracking.html", context)
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -77,16 +104,80 @@ class OrderSummaryView(LoginRequiredMixin, View):
                 'object': order
             }
             return render(self.request, "order_summary.html", context)
-        except ObjectDoesNotExist:
+        except Order.DoesNotExist:
             messages.error(
                 self.request, "You do not have an active order.",
                 fail_silently=False
             )
             return redirect("/")
 
+
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = "product_detail.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        qs = ProductReview.objects.filter(
+            product = self
+        )
+        context["qs"] = qs
+        return context
+
+
+@login_required(login_url="login_view")
+def product_detail(request, slug):
+    context = {}
+    product_obj = Product.objects.get(slug=slug)
+    qs = ProductReview.objects.filter(
+            product = product_obj
+        )
+    context["qs"] = qs
+    context["object"] = product_obj
+    return render(request, "product_detail.html", context)
+
+
+@login_required(login_url="login_view")
+def delete_review(request, q_id):
+    product = request.POST.get("product")
+    product_obj = Product.objects.get(id=int(product))
+    ProductReview.objects.get(id=q_id).delete()
+    slug = product_obj.slug
+   
+    messages.success(request, "Review deleted.")
+    return redirect("product", slug)
+
+@login_required(login_url="login_view")
+def update_review(request, q_id, user_id):
+    user = User.objects.get(id=user_id)
+    q_object = ProductReview.objects.filter(id=q_id,user=user).first()
+    rating = request.POST.get("rating")
+    content = request.POST.get("content")
+
+    if rating is not None:
+        q_object.rating = rating
+    else:
+        q_object.rating = 0
+    q_object.content = content
+    messages.success(request, "Review updated.")
+    q_object.save()
+    return redirect("product", q_object.product.slug)
+
+
+@login_required(login_url="login_view")
+def add_review(request):
+    q_object = ProductReview()
+    rating = request.POST.get("rating")
+    content = request.POST.get("content")
+    product_id = request.POST.get("product")
+    product_obj = Product.objects.get(id=int(product_id))
+    q_object.rating = rating
+    q_object.content = content
+    q_object.user = request.user
+    q_object.product = product_obj
+    q_object.save()
+    return redirect("product", product_obj.slug)
+
 
 
 @login_required(login_url="login_view")
@@ -138,42 +229,31 @@ class CheckoutView(LoginRequiredMixin, View):
         
         try:
             order = Order.objects.get(customer=self.request.user, ordered=False)
-            if form.is_valid():
-                street_address = form.cleaned_data.get("street_address")
-                country = form.cleaned_data.get("country")
-                phone = form.cleaned_data.get("phone")
-                city = form.cleaned_data.get("city")
-                payment_option = form.cleaned_data.get("payment_option")
-
-                billing_address = BillingAddress(
-                    customer = self.request.user,
-                    country = country,
-                    city = city,
-                    street_address = street_address,
-                    phone = phone
-                )
-                
-                if len(street_address) < 2:
-                    for value in street_address:
-                        if value in ["#", "@", "!", "/", ")","%","_","-",","]:
-                            messages.error(self.request, "Bad input for street address")
-                            return redirect("checkout")
-                    else:
-                        billing_address.save()
-                        order.billing_address = billing_address
-                        order.save()
-                else:
-                    messages.error(self.request, "Bad input for street address")
-                    return redirect("checkout")
-                print("Checked Out.")
-                
-                if payment_option == 'S':
-                    return redirect("payment", payment_option="stripe")
-                elif payment_option == 'P':
-                    return redirect("cash-delivery", payment_option="cash")
-                else:
-                    messages.warning(self.request, "Invalid payment option.", fail_silently=False)
-                    return redirect("checkout")
+            street_address = self.request.POST.get("street")
+            country = self.request.POST.get("country")
+            phone = self.request.POST.get("phone")
+            city = self.request.POST.get("city")
+            payment_option = self.request.POST.get("payment_option")
+            print(country, street_address, phone, city, payment_option)
+            billing_address = BillingAddress(
+                customer = self.request.user,
+                country = "TZ",
+                city = "Dar es Salaam",
+                street_address = street_address,
+                phone = phone
+            )
+            
+            billing_address.save()
+            order.billing_address = billing_address
+            order.save()
+            
+            if payment_option == 'S':
+                return redirect("payment", payment_option="stripe")
+            elif payment_option == 'P':
+                return redirect("cash-delivery", payment_option="cash")
+            else:
+                messages.warning(self.request, "Invalid payment option.", fail_silently=False)
+                return redirect("checkout")
 
         except ObjectDoesNotExist:
             
@@ -406,3 +486,20 @@ class OrdersView(LoginRequiredMixin, View):
     
     def post(self, *args, **kwargs):
         pass
+
+
+@login_required(login_url="login_view")
+def search_view(request):
+    context = dict()
+    queryset = Product.objects.all().order_by("name")
+    results = list()
+    q = request.POST.get("q")
+    if q is not None:
+        words = q.split()
+        for w in words:
+            results.append(queryset.filter(
+                Q(name__icontains=w) | Q(description__icontains=w) | Q(price__icontains=w)
+            ).distinct())
+        context["results"] = results
+    return render(request, "results.html", context)
+
